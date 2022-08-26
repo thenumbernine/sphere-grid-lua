@@ -1,10 +1,9 @@
 #!/usr/bin/env luajit
-local class = require 'ext.class'
 local range = require 'ext.range'
 local gl = require 'gl'
 local vec3d = require 'vec-ffi.vec3d'
 
-local App = class(require 'glapp.orbit'(require 'imguiapp'))
+local App = require 'imguiapp.withorbit'()
 
 App.title = 'meh'
 
