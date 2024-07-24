@@ -1,11 +1,13 @@
 #!/usr/bin/env luajit
-local range = require 'ext.range'
+local assertindex = require 'ext.assert'.index
+local table = require 'ext.table'
+local ig = require 'imgui'
 local gl = require 'gl'
 local vec3d = require 'vec-ffi.vec3d'
 
 local App = require 'imguiapp.withorbit'()
 
-App.title = 'meh'
+App.title = 'sphere grids'
 
 function App:initGL()
 	App.super.initGL(self)
@@ -33,43 +35,56 @@ local function basisFor(v)
 	end
 end
 
-function App:update()
-	gl.glClear(bit.bor(gl.GL_COLOR_BUFFER_BIT, gl.GL_DEPTH_BUFFER_BIT))
+numCircleDivs = 100	-- num circle divs
+angleMax = 120
+angleDivs = 12
+gridBasisType = 1
 
-	local n = 100	-- num circle divs
-	local phis = range(0,120,10)	-- sphere grid detail
+local gridBasisTypes = table{
+	'cube',
+	'triangle',
+	'tetrahedron',
+}
 
-	for _,a1 in ipairs{
-		-- [[ cube
+local basisForGrid = {
+	cube = {
 		vec3d(1,0,0),
 		vec3d(-1,0,0),
 		vec3d(0,1,0),
 		vec3d(0,-1,0),
 		vec3d(0,0,1),
 		vec3d(0,0,-1),
-		--]]
-		--[[ 2D triangle
+	},
+	triangle = {
 		vec3d(1,0,0),
 		vec3d(math.cos(math.rad(120)),math.sin(math.rad(120)),0),
 		vec3d(math.cos(math.rad(240)),math.sin(math.rad(240)),0),
-		--]]
-		--[[ 3D platonic solid -- tetrahedron
+	},
+	tetrahedron = {
 		vec3d(0,0,1),
 		vec3d(-math.sqrt(2/3), -math.sqrt(2)/3, -1/3),
 		vec3d(math.sqrt(2/3), -math.sqrt(2)/3, -1/3),
 		vec3d(0, math.sqrt(8)/3, -1/3),
-		--]]
-	} do
+	},
+}
+
+function App:update()
+	gl.glClear(bit.bor(gl.GL_COLOR_BUFFER_BIT, gl.GL_DEPTH_BUFFER_BIT))
+
+	local basis = basisForGrid[gridBasisTypes[gridBasisType]]
+
+	for _,a1 in ipairs(basis) do
 		local a2 = basisFor(a1):normalize()
 		local a3 = a1:cross(a2)
 		-- re-ortho-normalize a3
-		for _,phi in ipairs(phis) do
+		for j=1,angleDivs do
+			local phi = j/angleDivs*angleMax
 			local z = math.cos(math.rad(phi))
 			local r = math.sin(math.rad(phi))
 			
 			gl.glBegin(gl.GL_LINE_LOOP)
-			for i=1,n do
-				local th = (i-.5)/n*2*math.pi
+			for i=1,numCircleDivs do
+				local th = (i-.5)/numCircleDivs*2*math.pi
 				local v = a1 * z + a2 * r*math.cos(th) + a3 * r*math.sin(th)
 				gl.glVertex3dv(v.s)
 			end
@@ -78,6 +93,13 @@ function App:update()
 	end
 
 	App.super.update(self)
+end
+
+function App:updateGUI()
+	ig.luatableInputInt('num divs', _G, 'numCircleDivs')
+	ig.luatableInputFloat('angle max', _G, 'angleMax')
+	ig.luatableInputFloat('angle divs', _G, 'angleDivs')
+	ig.luatableCombo('grid basis', _G, 'gridBasisType', gridBasisTypes)
 end
 
 return App():run()
