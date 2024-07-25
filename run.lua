@@ -3,7 +3,11 @@ local assertindex = require 'ext.assert'.index
 local table = require 'ext.table'
 local ig = require 'imgui'
 local gl = require 'gl'
-local vec3d = require 'vec-ffi.vec3d'
+
+-- wow, if you use the pure-lua version, the js-emu impl runs a few orders faster
+local vec3d = js
+	and require 'vec.vec3'
+	or require 'vec-ffi.vec3d'
 
 local App = require 'imguiapp.withorbit'()
 App.viewUseBuiltinMatrixMath = true
@@ -103,7 +107,11 @@ function App:updateGrid()
 			for i=1,numCircleDivs do
 				local th = (i-.5)/numCircleDivs*2*math.pi
 				local v = a1 * z + a2 * r*math.cos(th) + a3 * r*math.sin(th)
-				vertexes:append{v:unpack()}
+				--vertexes:append{v:unpack()}
+				local x, y, z = v:unpack()
+				vertexes:insert(x)
+				vertexes:insert(y)
+				vertexes:insert(z)
 			end
 
 			self.sceneobjs:insert(require 'gl.sceneobject'{
