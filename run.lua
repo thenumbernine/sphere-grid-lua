@@ -3,6 +3,7 @@ local assertindex = require 'ext.assert'.index
 local table = require 'ext.table'
 local ig = require 'imgui'
 local gl = require 'gl'
+local GLSceneObject = require 'gl.sceneobject'
 
 -- wow, if you use the pure-lua version, the js-emu impl runs a few orders faster
 local vec3d = js
@@ -93,7 +94,9 @@ local basisForGrid = {
 }
 
 function App:updateGrid()
-	self.sceneobjs = table()
+	local vertexes = table()
+	local geometries = table()
+
 	for _,a1 in ipairs(basisForGrid[gridBasisTypes[gridBasisType]]) do
 		local a2 = basisFor(a1):normalize()
 		local a3 = a1:cross(a2)
@@ -103,37 +106,41 @@ function App:updateGrid()
 			local z = math.cos(math.rad(phi))
 			local r = math.sin(math.rad(phi))
 
-			local vertexes = table()
+			local indexes = table()
 			for i=1,numCircleDivs do
 				local th = (i-.5)/numCircleDivs*2*math.pi
 				local v = a1 * z + a2 * r*math.cos(th) + a3 * r*math.sin(th)
-				--vertexes:append{v:unpack()}
+
 				local x, y, z = v:unpack()
+				indexes:insert(#vertexes/3)
 				vertexes:insert(x)
 				vertexes:insert(y)
 				vertexes:insert(z)
 			end
 
-			self.sceneobjs:insert(require 'gl.sceneobject'{
-				program = self.shader,
-				vertexes = {
-					data = vertexes,
-					dim = 3,
+			geometries:insert{
+				mode = gl.GL_LINE_LOOP,
+				indexes = {
+					data = indexes,
 				},
-				geometry = {
-					mode = gl.GL_LINE_LOOP,
-				},
-			})
+			}
 		end
 	end
+
+	self.sceneobj = GLSceneObject{
+		program = self.shader,
+		vertexes = {
+			data = vertexes,
+			dim = 3,
+		},
+		geometries = geometries,
+	}
 end
 
 function App:update()
 	gl.glClear(bit.bor(gl.GL_COLOR_BUFFER_BIT, gl.GL_DEPTH_BUFFER_BIT))
-	for _,sceneobj in ipairs(self.sceneobjs) do
-		sceneobj.uniforms.mvProjMat = self.view.mvProjMat.ptr
-		sceneobj:draw()
-	end
+	self.sceneobj.uniforms.mvProjMat = self.view.mvProjMat.ptr
+	self.sceneobj:draw()
 	App.super.update(self)
 end
 
