@@ -11,8 +11,9 @@ local vec3d = js
 	or require 'vec-ffi.vec3d'
 
 local App = require 'imguiapp.withorbit'()
-App.viewUseBuiltinMatrixMath = true
 App.title = 'sphere grids'
+App.viewUseBuiltinMatrixMath = true
+App.viewDist = 3
 
 function App:initGL()
 	App.super.initGL(self)
@@ -106,23 +107,22 @@ function App:updateGrid()
 			local z = math.cos(math.rad(phi))
 			local r = math.sin(math.rad(phi))
 
-			local indexes = table()
+			local indexStart = #vertexes / 3
 			for i=1,numCircleDivs do
 				local th = (i-.5)/numCircleDivs*2*math.pi
 				local v = a1 * z + a2 * r*math.cos(th) + a3 * r*math.sin(th)
 
 				local x, y, z = v:unpack()
-				indexes:insert(#vertexes/3)
 				vertexes:insert(x)
 				vertexes:insert(y)
 				vertexes:insert(z)
 			end
+			local indexEnd = #vertexes / 3
 
 			geometries:insert{
 				mode = gl.GL_LINE_LOOP,
-				indexes = {
-					data = indexes,
-				},
+				offset = indexStart,
+				count = indexEnd - indexStart,
 			}
 		end
 	end
