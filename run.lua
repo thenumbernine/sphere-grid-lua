@@ -12,7 +12,6 @@ local vec3d = js
 
 local App = require 'imguiapp.withorbit'()
 App.title = 'sphere grids'
-App.viewUseBuiltinMatrixMath = true
 App.viewDist = 3
 
 function App:initGL()
