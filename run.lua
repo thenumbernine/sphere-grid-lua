@@ -1,5 +1,5 @@
 #!/usr/bin/env luajit
-local assertindex = require 'ext.assert'.index
+local assert = require 'ext.assert'
 local table = require 'ext.table'
 local ig = require 'imgui'
 local gl = require 'gl'
