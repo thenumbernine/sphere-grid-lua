@@ -2,11 +2,7 @@
 local ig = require 'imgui'
 local gl = require 'gl'
 local GLSceneObject = require 'gl.sceneobject'
-
--- wow, if you use the pure-lua version, the js-emu impl runs a few orders faster
-local vec3d = js
-	and require 'vec.vec3'
-	or require 'vec-ffi.vec3d'
+local vec3d = require 'vec-ffi.vec3d'
 
 local App = require 'imguiapp.withorbit'()
 App.title = 'sphere grids'
