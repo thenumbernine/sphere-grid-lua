@@ -4,6 +4,7 @@ local table = require 'ext.table'
 local ig = require 'imgui'
 local gl = require 'gl'
 local GLSceneObject = require 'gl.sceneobject'
+local GLProgram = require 'gl.program'
 local vec3d = require 'vec-ffi.vec3d'
 
 local App = require 'imguiapp.withorbit'()
@@ -13,7 +14,7 @@ App.viewDist = 3
 function App:initGL()
 	App.super.initGL(self)
 
-	self.shader = require 'gl.program'{
+	self.shader = GLProgram{
 		version = 'latest',
 		precision = 'best',
 		vertexCode = [[

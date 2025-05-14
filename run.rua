@@ -2,6 +2,7 @@
 local ig = require 'imgui'
 local gl = require 'gl'
 local GLSceneObject = require 'gl.sceneobject'
+local GLProgram = require 'gl.program'
 local vec3d = require 'vec-ffi.vec3d'
 
 local App = require 'imguiapp.withorbit'()
@@ -11,7 +12,7 @@ App.viewDist = 3
 App.initGL = [:] do
 	App.super.initGL(self)
 
-	self.shader = require 'gl.program'{
+	self.shader = GLProgram{
 		version = 'latest',
 		precision = 'best',
 		vertexCode = [[
@@ -130,7 +131,7 @@ App.updateGrid = [:] do
 end
 
 App.update = [:] do
-	gl.glClear(bit.bor(gl.GL_COLOR_BUFFER_BIT, gl.GL_DEPTH_BUFFER_BIT))
+	gl.glClear(gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT)
 	self.sceneobj.uniforms.mvProjMat = self.view.mvProjMat.ptr
 	self.sceneobj:draw()
 	App.super.update(self)
