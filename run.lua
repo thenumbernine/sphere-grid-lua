@@ -7,7 +7,7 @@ local GLSceneObject = require 'gl.sceneobject'
 local GLProgram = require 'gl.program'
 local vec3d = require 'vec-ffi.vec3d'
 
-local App = require 'imguiapp.withorbit'()
+local App = require 'imgui.appwithorbit'()
 App.title = 'sphere grids'
 App.viewDist = 3
 
