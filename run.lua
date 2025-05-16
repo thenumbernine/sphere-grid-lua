@@ -1,4 +1,9 @@
 #!/usr/bin/env luajit
+local cmdline = require 'ext.cmdline'.validate{
+	gridType = {desc = 'name of grid type.  cube, triangle, tetrahedron'},
+	gridAngleMax = {desc = 'angle from grid line to its axis'},
+	numGridLines = {desc = 'number of grid lines'},
+}(...)
 local assert = require 'ext.assert'
 local table = require 'ext.table'
 local ig = require 'imgui'
@@ -58,15 +63,16 @@ local function basisFor(v)
 end
 
 numCircleDivs = 100	-- num circle divs
-gridAngleMax = 120
-numGridLines = 12
-gridBasisType = 1
+gridAngleMax = cmdline.gridAngleMax or 120
+numGridLines = cmdline.numGridLines or 12
 
 local gridBasisTypes = table{
 	'cube',
 	'triangle',
 	'tetrahedron',
 }
+
+gridBasisType = cmdline.gridType and gridBasisTypes:find(cmdline.gridType) or 1
 
 local basisForGrid = {
 	cube = {

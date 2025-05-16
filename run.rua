@@ -5,6 +5,12 @@ local GLSceneObject = require 'gl.sceneobject'
 local GLProgram = require 'gl.program'
 local vec3d = require 'vec-ffi.vec3d'
 
+local cmdline = require 'ext.cmdline'.validate{
+	gridType = {desc = 'name of grid type.  cube, triangle, tetrahedron'},
+	gridAngleMax = {desc = 'angle from grid line to its axis'},
+	numGridLines = {desc = 'number of grid lines'},
+}(...)
+
 local App = require 'imgui.appwithorbit'()
 App.title = 'sphere grids'
 App.viewDist = 3
@@ -55,15 +61,16 @@ local basisFor = [v] do
 end
 
 numCircleDivs = 100	-- num circle divs
-gridAngleMax = 120
-numGridLines = 12
-gridBasisType = 1
+gridAngleMax = cmdline.gridAngleMax or 120
+numGridLines = cmdline.numGridLines or 12
 
 local gridBasisTypes = table{
 	'cube',
 	'triangle',
 	'tetrahedron',
 }
+
+gridBasisType = cmdline.gridType and gridBasisTypes:find(cmdline.gridType) or 1
 
 local basisForGrid = {
 	cube = {
