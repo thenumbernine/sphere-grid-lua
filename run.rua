@@ -18,23 +18,10 @@ App.viewDist = 3
 App.initGL = [:] do
 	App.super.initGL(self)
 
-	self.shader = GLProgram{
-		version = 'latest',
-		precision = 'best',
-		vertexCode = [[
-in vec3 vertex;
-uniform mat4 mvProjMat;
-void main() {
-	gl_Position = mvProjMat * vec4(vertex, 1.);
-}
-]],
-		fragmentCode = [[
-out vec4 fragColor;
-void main() {
-	fragColor = vec4(1., 1., 1., 1.);
-}
-]],
-	}:useNone()
+	self.shader = GLProgram.make{
+		vertex = 'vec3',
+		color = {1,1,1,1},
+	}
 
 	self:updateGrid()
 end
