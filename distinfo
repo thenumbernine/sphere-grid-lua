@@ -1,0 +1,12 @@
+name = "sphere-grid"
+files = {
+	["README.md"] = "sphere-grid/README.md",
+	["run.lua"] = "sphere-grid/run.lua",
+	["run.rua"] = "sphere-grid/run.rua",
+}
+deps = {
+	"ext",
+	"gl",
+	"imgui",
+	"vec-ffi",
+}
