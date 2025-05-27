@@ -15,7 +15,7 @@ local App = require 'imgui.appwithorbit'()
 App.title = 'sphere grids'
 App.viewDist = 3
 
-App.initGL = [:] do
+App.initGL = |:| do
 	App.super.initGL(self)
 
 	self.shader = GLProgram.make{
@@ -26,7 +26,7 @@ App.initGL = [:] do
 	self:updateGrid()
 end
 
-local basisFor = [v] do
+local basisFor = |v| do
 	local x = v:cross(vec3d(1,0,0))
 	local y = v:cross(vec3d(0,1,0))
 	local z = v:cross(vec3d(0,0,1))
@@ -81,7 +81,7 @@ local basisForGrid = {
 	},
 }
 
-App.updateGrid = [:] do
+App.updateGrid = |:| do
 	local vertexes = table()
 	local geometries = table()
 
@@ -124,14 +124,14 @@ App.updateGrid = [:] do
 	}
 end
 
-App.update = [:] do
+App.update = |:| do
 	gl.glClear(gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT)
 	self.sceneobj.uniforms.mvProjMat = self.view.mvProjMat.ptr
 	self.sceneobj:draw()
 	App.super.update(self)
 end
 
-App.updateGUI = [:] do
+App.updateGUI = |:| do
 	if ig.luatableInputInt('circle resolution', _G, 'numCircleDivs')
 	or ig.luatableInputFloat('grid angle max', _G, 'gridAngleMax')
 	or ig.luatableInputInt('num grid lines', _G, 'numGridLines')
