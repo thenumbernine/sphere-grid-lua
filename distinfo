@@ -1,8 +1,13 @@
+--------------------------------------------
+-- generated with dist/build-distinfo.rua --
+--------------------------------------------
+
 name = "sphere-grid"
 files = {
-	["README.md"] = "sphere-grid/README.md",
-	["run.lua"] = "sphere-grid/run.lua",
-	["run.rua"] = "sphere-grid/run.rua",
+	"README.md",
+	"distinfo",
+	"run.lua",
+	"run.rua",
 }
 deps = {
 	"ext",
